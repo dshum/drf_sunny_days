@@ -2,18 +2,29 @@ import random
 from datetime import datetime, timedelta
 from itertools import groupby
 from collections import Counter
+from typing import Any, List
 
 from django.core.management.base import BaseCommand
 
 from ...models import City, Forecast
 
 
-def group_in_isles(elements: list):
-    print([list(j) for i, j in groupby(elements)])
+def group_in_isles(elements: list[Any]) -> list[list[Any]]:
+    """Groups the same values in isles.
+
+    :param elements: list of elements
+    :return: list of groups of elements
+    """
+    return [list(j) for i, j in groupby(elements)]
 
 
-def group_same_values(elements: list):
-    print(Counter(elements))
+def group_same_values(elements: list[Any]) -> list[Any]:
+    """Counts amount of the same values.
+
+    :param elements: list of elements
+    :return: list of counts
+    """
+    return list(Counter(elements))
 
 
 class Command(BaseCommand):
