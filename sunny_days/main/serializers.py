@@ -1,10 +1,7 @@
-from abc import ABC
-from datetime import datetime, date
+from datetime import date
 
 from django.db import connection
 from django.db.models import Q
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from rest_framework import serializers
 
 from .models import City, Forecast
@@ -52,9 +49,7 @@ class CityViewSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_month_max_sunshine_period(obj: City) -> int:
         month_start = date.today().replace(day=1)
-        current_month_forecasts = Forecast.objects.filter(city=obj) \
-            .filter(date__gte=month_start) \
-            .order_by('-date')
+        current_month_forecasts = Forecast.objects.filter(city=obj, date__gte=month_start)
         max_period = count = 0
         for forecast in current_month_forecasts:
             if forecast.condition == 'Sunny':
@@ -68,8 +63,7 @@ class CityViewSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_current_sunshine_period(obj: City) -> int:
         last_overcast_day = Forecast.objects.filter(city=obj) \
-            .filter(~Q(condition='Sunny')) \
-            .order_by('-date')
+            .filter(~Q(condition='Sunny'))
         delta = date.today() - last_overcast_day[0].date
         return delta.days
 

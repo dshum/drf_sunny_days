@@ -15,7 +15,7 @@ class Command(BaseCommand):
         cities, today, added = City.objects.all(), date.today(), 0
 
         for city in cities:
-            today_forecast = Forecast.objects.filter(city=city).filter(date=today).count()
+            today_forecast = Forecast.objects.filter(city=city, date=today).count()
             if today_forecast:
                 continue
 
